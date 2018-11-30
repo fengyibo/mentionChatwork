@@ -32,7 +32,7 @@ class ChatWorkListener < Redmine::Hook::Listener
     disabled = check_disabled issue.project
 
     return if disabled
-    return unless room and Setting.plugin_redmine_chatwork["post_updates"] == '1'
+    return unless room and Setting.plugin_mentionChatwork["post_updates"] == '1'
     return if issue.is_private?
     return if not journal.notes
 
@@ -54,7 +54,7 @@ class ChatWorkListener < Redmine::Hook::Listener
   end
 
   def controller_wiki_edit_after_save(context = {})
-    return unless Setting.plugin_redmine_chatwork["post_wiki_updates"] == '1'
+    return unless Setting.plugin_mentionChatwork["post_wiki_updates"] == '1'
 
     project = context[:project]
     page = context[:page]
@@ -76,7 +76,7 @@ class ChatWorkListener < Redmine::Hook::Listener
 
   def speak(room, header, body=nil, footer=nil)
     url = 'https://api.chatwork.com/v2/rooms/'
-    token = Setting.plugin_redmine_chatwork["token"]
+    token = Setting.plugin_mentionChatwork["token"]
     content = create_body body, header, footer
     reqHeader = {'X-ChatWorkToken' => token}
     endpoint = "#{url}#{room}/messages"
@@ -159,7 +159,7 @@ class ChatWorkListener < Redmine::Hook::Listener
     cf = ProjectCustomField.find_by_name("ChatWork")
 
     val = [
-        Setting.plugin_redmine_chatwork["room"],
+        Setting.plugin_mentionChatwork["room"],
         (proj.custom_value_for(cf).value rescue nil),
     ].find { |v| v.present? }
 
