@@ -11,6 +11,14 @@
   <label for="settings_room"><%= l(:text_default_room_url) %></label>
   <input type="text" id="settings_room" value="<%= settings['room'] %>" name="settings[room]" required placeholder="<%= l(:text_default_room_url_placeholder) %>" style="width:90%" />
 </p>
+
+<p><%= l(:text_room_for_invoice_tracker) %></p>
+
+<p>
+  <label for="settings[trigger_invoice_tracker]"><%= l(:Trigger) %>トラッカ―名</label>
+  <%= select_tag('settings[trigger_invoice_tracker]',　trackers_options_for_select( @issue, settings['trigger_invoice_tracker'] ) ) %>
+</p>
+
 <p>
   <label for="settings_room_for_invoice"><%= l(:text_default_room_for_invoice_url) %></label>
   <input type="text" id="settings_room_for_invoice" value="<%= settings['room_for_invoice'] %>" name="settings[room_for_invoice]" required placeholder="<%= l(:text_default_room_url_placeholder) %>" style="width:90%" />
