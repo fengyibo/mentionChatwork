@@ -27,8 +27,10 @@ class ChatWorkListener < Redmine::Hook::Listener
 
     return if room_invoice.nil?
     speak room_invoice, header, body
-    p issue.tracker_id
-    p Setting.plugin_mentionChatwork["trigger_invoice_tracker"]
+
+    logger.debug( issue.tracker_id )
+    logger.debug( Setting.plugin_mentionChatwork["trigger_invoice_tracker"] )
+
     if issue.tracker_id == Setting.plugin_mentionChatwork["trigger_invoice_tracker"]
       speak room_invoice, header, body
     end
