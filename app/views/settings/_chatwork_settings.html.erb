@@ -15,7 +15,7 @@
 <p><%= l(:text_room_for_invoice_tracker) %></p>
 
 <p>
-  <label for="settings[trigger_invoice_tracker]"><%= l(:Trigger) %>トラッカ―名</label>@trackers = Tracker.sorted.to_a
+  <label for="settings[trigger_invoice_tracker]">対象トラッカ―名</label>
   <%= select_tag("settings[trigger_invoice_tracker]", options_from_collection_for_select(Tracker.all, :id, :name, settings['trigger_invoice_tracker'])) %>
 </p>
 

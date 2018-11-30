@@ -4,6 +4,7 @@ class ChatWorkListener < Redmine::Hook::Listener
   def controller_issues_new_after_save(context={})
     issue = context[:issue]
     room = room_for_project issue.project
+    room_invoice = room_for_project_invoice issue.project
     disabled = check_disabled issue.project
 
     return if disabled
@@ -23,6 +24,11 @@ class ChatWorkListener < Redmine::Hook::Listener
     body = escape issue.description if issue.description
 
     speak room, header, body
+
+    return if room_invoice.nil?
+
+
+    speak room_invoice, header, body
   end
 
   def controller_issues_edit_after_save(context={})
@@ -98,7 +104,7 @@ class ChatWorkListener < Redmine::Hook::Listener
 
     if header
       result +=
-          "[title]#{'['+header[:status]+']' if header[:status]} #{header[:title] if header[:title]} / #{header[:project] if header[:project]}\n#{header[:url] if header[:url]}\n#{'By: '+header[:by] if header[:by]}#{', Assignee: '+header[:assigned_to] if header[:assigned_to]}#{', Author: '+header[:author] if header[:author]}[/title]"
+          "[title]#{'['+header[:status]+header[:tracker]+']' if header[:status]} #{header[:title] if header[:title]} / #{header[:project] if header[:project]}\n#{header[:url] if header[:url]}\n#{'By: '+header[:by] if header[:by]}#{', Assignee: '+header[:assigned_to] if header[:assigned_to]}#{', Author: '+header[:author] if header[:author]}[/title]"
     end
 
     if body
@@ -162,6 +168,18 @@ class ChatWorkListener < Redmine::Hook::Listener
         Setting.plugin_mentionChatwork["room"],
         (proj.custom_value_for(cf).value rescue nil),
     ].find { |v| v.present? }
+
+    rid = val.match(/#!rid\d+/)
+
+    rid[0][5..val.length]
+  end
+
+  def room_for_project_invoice(proj)
+    return nil if proj.blank?
+
+    val = (Setting.plugin_mentionChatwork["room_for_invoice"] rescue nil)
+
+    return nil if val.nil?
 
     rid = val.match(/#!rid\d+/)
 
