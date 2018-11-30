@@ -23,6 +23,8 @@ class ChatWorkListener < Redmine::Hook::Listener
 
     body = escape issue.description if issue.description
 
+    speak room_invoice, header, body
+
     speak room, header, body
 
     # return if room_invoice.nil?
