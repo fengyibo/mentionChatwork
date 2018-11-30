@@ -27,8 +27,9 @@ class ChatWorkListener < Redmine::Hook::Listener
 
     return if room_invoice.nil?
 
-
-    speak room_invoice, header, body
+    if issue.tracker_id == Setting.plugin_mentionChatwork["trigger_invoice_tracker"]
+      speak room_invoice, header, body
+    end
   end
 
   def controller_issues_edit_after_save(context={})
@@ -104,7 +105,7 @@ class ChatWorkListener < Redmine::Hook::Listener
 
     if header
       result +=
-          "[title]#{'['+header[:tracker]+']' if header[:status]} #{header[:title] if header[:title]} / #{header[:project] if header[:project]}\n#{header[:url] if header[:url]}\n#{'By: '+header[:by] if header[:by]}#{', Assignee: '+header[:assigned_to] if header[:assigned_to]}#{', Author: '+header[:author] if header[:author]}[/title]"
+          "[title]#{'['+header[:status]+']' if header[:status]} #{header[:title] if header[:title]} / #{header[:project] if header[:project]}\n#{header[:url] if header[:url]}\n#{'By: '+header[:by] if header[:by]}#{', Assignee: '+header[:assigned_to] if header[:assigned_to]}#{', Author: '+header[:author] if header[:author]}[/title]"
     end
 
     if body
