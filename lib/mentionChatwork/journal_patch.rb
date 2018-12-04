@@ -30,10 +30,11 @@ module RedmineMentions
                 if val != nil
                   rid = val.match(/#!rid\d+/)
                   room = rid[0][5..val.length]
+                  url_str = object_url(issue) + "#note-" + escape(issue.lock_version.to_s)
                   header = {
                     :project => escape(issue.project),
                     :title => escape(issue),
-                    :url => object_url(issue),
+                    :url => url_str,
                     :author => escape(issue.author),
                     :assigned_to => escape(issue.assigned_to.to_s),
                     :status => escape(issue.status.to_s),
@@ -75,8 +76,8 @@ module RedmineMentions
         result +=
             "[title]"+
             "#{'ステータス ['+header[:status]+']' if header[:status]} "+
-            "#{header[:title] if header[:title]} / #{header[:project] if header[:project]}"+
-            "#{header[:url] if header[:url]}"+
+            "#{header[:title] if header[:title]} / #{header[:project] if header[:project]}\n"+
+            "#{header[:url] if header[:url]}\n"+
             # "#{'送信者: '+header[:by] if header[:by]}"+
             "#{'送信者: '+header[:assigned_to] if header[:assigned_to]}"+
             # "#{', 責任者: '+header[:author] if header[:author]}"+
