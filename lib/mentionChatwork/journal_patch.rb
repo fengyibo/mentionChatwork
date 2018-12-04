@@ -22,9 +22,8 @@ module RedmineMentions
 
                 val = user.custom_field_value('UserChatWorkRoom')
 
-                val2 = user.CustomField
+                val2 = user.custom_field_values.find_by_name("UserChatWorkRoom")
                 logger = Logger.new('log/development.log')
-                logger.debug val
                 logger.debug val2
 
                 if val != nil
