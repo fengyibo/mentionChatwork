@@ -21,7 +21,7 @@ module RedmineMentions
                 MentionMailer.notify_mentioning(issue, self, user).deliver
 
                 val = user.custom_field_value('UserChatWorkRoom')
-                rid = val.match(/#!rid\d+/) if state != nil
+                rid = val.match(/#!rid\d+/) if val != nil
 
                 room = rid[0][5..val.length]
 
