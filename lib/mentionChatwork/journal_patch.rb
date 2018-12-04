@@ -37,56 +37,48 @@ module RedmineMentions
               end
             end
           end
-
-
-
-          def speak(room, header, body=nil, footer=nil)
-            url = 'https://api.chatwork.com/v2/rooms/'
-            token = Setting.plugin_mentionChatwork["token"]
-            content = create_body body, header, footer
-            reqHeader = {'X-ChatWorkToken' => token}
-            endpoint = "#{url}#{room}/messages"
-      
-            begin
-              client = HTTPClient.new
-              client.ssl_config.cert_store.set_default_paths
-              client.ssl_config.ssl_version = :auto
-              client.post_async(endpoint, "body=#{content}", reqHeader)
-      
-            rescue Exception => e
-              Rails.logger.info("cannot connect to #{endpoint}")
-              Rails.logger.info(e)
-            end
-          end
-      
-          def create_body(body=nil, header=nil, footer=nil)
-            result = '[info]'
-      
-            if header
-              result +=
-                  "[title]#{'['+header[:status]+']' if header[:status]} #{header[:title] if header[:title]} / #{header[:project] if header[:project]}\n#{header[:url] if header[:url]}\n#{'By: '+header[:by] if header[:by]}#{', Assignee: '+header[:assigned_to] if header[:assigned_to]}#{', Author: '+header[:author] if header[:author]}[/title]"
-            end
-      
-            if body
-              result += body
-            end
-      
-            if footer
-              result += "\n" + footer
-            end
-      
-            result += '[/info]'
-      
-            CGI.escape result
-          end
-      
-
-      
-
-
-
         end
       end
+    end
+
+    def speak(room, header, body=nil, footer=nil)
+      url = 'https://api.chatwork.com/v2/rooms/'
+      token = Setting.plugin_mentionChatwork["token"]
+      content = create_body body, header, footer
+      reqHeader = {'X-ChatWorkToken' => token}
+      endpoint = "#{url}#{room}/messages"
+
+      begin
+        client = HTTPClient.new
+        client.ssl_config.cert_store.set_default_paths
+        client.ssl_config.ssl_version = :auto
+        client.post_async(endpoint, "body=#{content}", reqHeader)
+
+      rescue Exception => e
+        Rails.logger.info("cannot connect to #{endpoint}")
+        Rails.logger.info(e)
+      end
+    end
+
+    def create_body(body=nil, header=nil, footer=nil)
+      result = '[info]'
+
+      if header
+        result +=
+            "[title]#{'['+header[:status]+']' if header[:status]} #{header[:title] if header[:title]} / #{header[:project] if header[:project]}\n#{header[:url] if header[:url]}\n#{'By: '+header[:by] if header[:by]}#{', Assignee: '+header[:assigned_to] if header[:assigned_to]}#{', Author: '+header[:author] if header[:author]}[/title]"
+      end
+
+      if body
+        result += body
+      end
+
+      if footer
+        result += "\n" + footer
+      end
+
+      result += '[/info]'
+
+      CGI.escape result
     end
 
     private
