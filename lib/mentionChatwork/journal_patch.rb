@@ -22,9 +22,11 @@ module RedmineMentions
 
                 val = user.custom_field_value('UserChatWorkRoom')
 
-                val2 = user.custom_field_values.find_by_name("UserChatWorkRoom")
+                cf = user.custom_field_values("UserChatWorkRoom")
+                state = user.custom_value_for(cf).value rescue nil
+
                 logger = Logger.new('log/development.log')
-                logger.debug val2
+                logger.debug state
 
                 if val != nil
                   rid = val.match(/#!rid\d+/)
