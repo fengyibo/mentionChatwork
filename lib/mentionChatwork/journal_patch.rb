@@ -17,19 +17,6 @@ module RedmineMentions
               username = mentioned_user.first[1..-1]
               if user = User.find_by_login(username)
                 MentionMailer.notify_mentioning(issue, self, user).deliver
-
-                header = {
-                  :project => escape(issue.project),
-                  :title => escape(issue),
-                  :url => object_url(issue),
-                  :author => escape(issue.author),
-                  :assigned_to => escape(issue.assigned_to.to_s),
-                  :status => escape(issue.status.to_s),
-                  :by => escape(journal.user.to_s)
-                }
-
-                body = escape journal.notes if journal.notes
-                speak room, header, body
               end
             end
           end
