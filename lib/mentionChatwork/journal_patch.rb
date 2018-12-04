@@ -21,7 +21,7 @@ module RedmineMentions
                 MentionMailer.notify_mentioning(issue, self, user).deliver
 
                 val = user.custom_field_value('UserChatWorkRoom')
-                config.logger = Logger.new('log/development.log')
+                logger = Logger.new('log/development.log')
                 logger.debug val
 
                 if val != nil
