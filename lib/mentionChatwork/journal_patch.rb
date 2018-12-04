@@ -22,7 +22,7 @@ module RedmineMentions
 
                 val = user.custom_field_value('UserChatWorkRoom')
                 logger = Logger.new('log/development.log')
-                logger.debug val
+                logger.debug user
 
                 if val != nil
                   rid = val.match(/#!rid\d+/)
