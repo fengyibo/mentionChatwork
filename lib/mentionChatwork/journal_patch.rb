@@ -4,9 +4,9 @@ module RedmineMentions
   module JournalPatch
     def self.included(base)
       base.class_eval do
-        after_create :send_mail
+        after_create :send_chatwork
 
-        def send_mail
+        def send_chatwork
           if self.journalized.is_a?(Issue) && self.notes.present?
             issue = self.journalized
             project=self.journalized.project
@@ -18,7 +18,8 @@ module RedmineMentions
             mentioned_users.each do |mentioned_user|
               username = mentioned_user.first[1..-1]
               if user = User.find_by_login(username)
-                MentionMailer.notify_mentioning(issue, self, user).deliver
+                # メール送信機能は無効
+                # MentionMailer.notify_mentioning(issue, self, user).deliver
 
                 cf = UserCustomField.find_by_name("UserChatWorkRoom")
                 val = user.custom_value_for(cf).value rescue nil
@@ -33,7 +34,7 @@ module RedmineMentions
                     :author => escape(issue.author),
                     :assigned_to => escape(issue.assigned_to.to_s),
                     :status => escape(issue.status.to_s),
-                    # :by => escape(issue.user.to_s)
+                    :by => escape(username.to_s)
                   }
                   body = escape issue.notes if issue.notes
                   speak room, header, body
@@ -68,8 +69,16 @@ module RedmineMentions
       result = '[info]'
 
       if header
+        # [title][新規] バグ #1: test / テストプロジェクトhttp://localhost:3000/issues/1, Assignee: , Author: Admin Redmine[/title]@kariya dsdafasdlkfjlkdsj
         result +=
-            "[title]#{'['+header[:status]+']' if header[:status]} #{header[:title] if header[:title]} / #{header[:project] if header[:project]}\n#{header[:url] if header[:url]}\n#{'By: '+header[:by] if header[:by]}#{', Assignee: '+header[:assigned_to] if header[:assigned_to]}#{', Author: '+header[:author] if header[:author]}[/title]"
+            "[title]
+            #{'['+header[:status]+']' if header[:status]} 
+            #{header[:title] if header[:title]} / #{header[:project] if header[:project]}\n
+            #{header[:url] if header[:url]}\n
+            #{'送信者: '+header[:by] if header[:by]}
+            #{', 支持者: '+header[:assigned_to] if header[:assigned_to]}
+            #{', 担当者: '+header[:author] if header[:author]}
+            [/title]"
       end
 
       if body
