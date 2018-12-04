@@ -21,22 +21,24 @@ module RedmineMentions
                 MentionMailer.notify_mentioning(issue, self, user).deliver
 
                 val = user.custom_field_value('UserChatWorkRoom')
-                rid = val.match(/#!rid\d+/) if val != nil
+                config.logger = Logger.new('log/development.log')
+                logger.debug val
 
-                room = rid[0][5..val.length]
-
-                header = {
-                  :project => escape(issue.project),
-                  :title => escape(issue),
-                  :url => object_url(issue),
-                  :author => escape(issue.author),
-                  :assigned_to => escape(issue.assigned_to.to_s),
-                  :status => escape(issue.status.to_s),
-                  # :by => escape(issue.user.to_s)
-                }
-
-                body = escape issue.notes if issue.notes
-                speak room, header, body
+                if val != nil
+                  rid = val.match(/#!rid\d+/)
+                  room = rid[0][5..val.length]
+                  header = {
+                    :project => escape(issue.project),
+                    :title => escape(issue),
+                    :url => object_url(issue),
+                    :author => escape(issue.author),
+                    :assigned_to => escape(issue.assigned_to.to_s),
+                    :status => escape(issue.status.to_s),
+                    # :by => escape(issue.user.to_s)
+                  }
+                  body = escape issue.notes if issue.notes
+                  speak room, header, body
+                  end
               end
             end
           end
