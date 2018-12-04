@@ -29,7 +29,7 @@ module RedmineMentions
                   :author => escape(issue.author),
                   :assigned_to => escape(issue.assigned_to.to_s),
                   :status => escape(issue.status.to_s),
-                  :by => escape(issue.user.to_s)
+                  # :by => escape(issue.user.to_s)
                 }
 
                 body = escape issue.notes if issue.notes
