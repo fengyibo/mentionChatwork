@@ -69,16 +69,10 @@ module RedmineMentions
       result = '[info]'
 
       if header
-        # [title][新規] バグ #1: test / テストプロジェクトhttp://localhost:3000/issues/1, Assignee: , Author: Admin Redmine[/title]@kariya dsdafasdlkfjlkdsj
         result +=
-            "[title]
-            #{'['+header[:status]+']' if header[:status]} 
-            #{header[:title] if header[:title]} / #{header[:project] if header[:project]}\n
+            "[title]#{'['+header[:status]+']' if header[:status]} #{header[:title] if header[:title]} / #{header[:project] if header[:project]}\n
             #{header[:url] if header[:url]}\n
-            #{'送信者: '+header[:by] if header[:by]}
-            #{', 支持者: '+header[:assigned_to] if header[:assigned_to]}
-            #{', 担当者: '+header[:author] if header[:author]}
-            [/title]"
+            #{'送信者: '+header[:by] if header[:by]}#{', 担当者: '+header[:assigned_to] if header[:assigned_to]}#{', 責任者: '+header[:author] if header[:author]}[/title]"
       end
 
       if body
@@ -115,88 +109,5 @@ module RedmineMentions
          }))
       end
     end
-
-    def check_disabled(proj)
-      return nil if proj.blank?
-
-      cf = ProjectCustomField.find_by_name("ChatWork Disabled")
-      state = proj.custom_value_for(cf).value rescue nil
-
-      if state == nil
-        return false
-      end
-
-      if state == '0'
-        return false
-      end
-
-      true
-    end
-
-    def room_for_project(proj)
-      return nil if proj.blank?
-
-      cf = ProjectCustomField.find_by_name("ChatWork")
-
-      val = [
-          Setting.plugin_mentionChatwork["room"],
-          (proj.custom_value_for(cf).value rescue nil),
-      ].find { |v| v.present? }
-
-      rid = val.match(/#!rid\d+/)
-
-      rid[0][5..val.length]
-    end
-
-    def detail_to_field(detail)
-      if detail.property == "cf"
-        key = CustomField.find(detail.prop_key).name rescue nil
-        title = key
-      elsif detail.property == "attachment"
-        key = "attachment"
-        title = I18n.t :label_attachment
-      else
-        key = detail.prop_key.to_s.sub("_id", "")
-        title = I18n.t "field_#{key}"
-      end
-
-      value = escape detail.value.to_s
-
-      case key
-        when "tracker"
-          tracker = Tracker.find(detail.value) rescue nil
-          value = escape tracker.to_s
-        when "project"
-          project = Project.find(detail.value) rescue nil
-          value = escape project.to_s
-        when "status"
-          return ''
-          #status = IssueStatus.find(detail.value) rescue nil
-          #value = escape status.to_s
-        when "priority"
-          priority = IssuePriority.find(detail.value) rescue nil
-          value = escape priority.to_s
-        when "category"
-          category = IssueCategory.find(detail.value) rescue nil
-          value = escape category.to_s
-        when "assigned_to"
-          user = User.find(detail.value) rescue nil
-          value = escape user.to_s
-        when "fixed_version"
-          version = Version.find(detail.value) rescue nil
-          value = escape version.to_s
-        when "attachment"
-          attachment = Attachment.find(detail.prop_key) rescue nil
-          value = "<#{object_url attachment}|#{escape attachment.filename}>" if attachment
-        when "parent"
-          issue = Issue.find(detail.value) rescue nil
-          value = "<#{object_url issue}|#{escape issue}>" if issue
-      end
-
-      value = "-" if value.empty?
-      result = "\n#{title}: #{value}"
-      result
-    end
-
   end
 end
