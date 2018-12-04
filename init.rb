@@ -3,6 +3,7 @@ require 'redmine'
 Rails.configuration.to_prepare do
     require_dependency 'mentionChatwork/listener'
     require_dependency 'mentionChatwork/hooks'
+    require_dependency 'mentionChatwork/journal_patch'
     require_dependency 'journal'
     Journal.send(:include, RedmineMentions::JournalPatch)
 end
