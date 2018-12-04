@@ -1,6 +1,11 @@
 require 'redmine'
 
-require_dependency 'mentionChatwork/listener'
+Rails.configuration.to_prepare do
+    require_dependency 'mentionChatwork/listener'
+    require_dependency 'mentionChatwork/hooks'
+    require_dependency 'journal'
+    Journal.send(:include, RedmineMentions::JournalPatch)
+end
 
 Redmine::Plugin.register :mentionChatwork do
   name 'Mention Chatwork'
@@ -16,7 +21,7 @@ Redmine::Plugin.register :mentionChatwork do
       'room' => nil,
       'token' => nil,
       'post_updates' => '1',
-      'post_wiki_updates' => '1'
-  },
-           :partial => 'settings/chatwork_settings'
+      'post_wiki_updates' => '1',
+      'trigger' => '@',
+  }, :partial => 'settings/chatwork_settings'
 end
