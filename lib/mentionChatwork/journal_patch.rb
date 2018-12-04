@@ -24,6 +24,9 @@ module RedmineMentions
                 cf = UserCustomField.find_by_name("UserChatWorkRoom")
                 val = user.custom_value_for(cf).value rescue nil
 
+                logger = Logger.new('log/development.log')
+                logger.debug issue
+
                 if val != nil
                   rid = val.match(/#!rid\d+/)
                   room = rid[0][5..val.length]
