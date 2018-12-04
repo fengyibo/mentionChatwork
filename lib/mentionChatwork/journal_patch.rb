@@ -20,7 +20,10 @@ module RedmineMentions
               if user = User.find_by_login(username)
                 MentionMailer.notify_mentioning(issue, self, user).deliver
 
-                room = user.custom_field_value('UserChatWorkRoom')
+                val = user.custom_field_value('UserChatWorkRoom')
+                rid = val.match(/#!rid\d+/)
+
+                room = rid[0][5..val.length]
 
                 header = {
                   :project => escape(issue.project),
