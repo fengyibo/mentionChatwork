@@ -20,14 +20,8 @@ module RedmineMentions
               if user = User.find_by_login(username)
                 MentionMailer.notify_mentioning(issue, self, user).deliver
 
-                val = user.custom_field_value('UserChatWorkRoom')
-
                 cf = UserCustomField.find_by_name("UserChatWorkRoom")
-                state = user.custom_value_for(cf).value rescue nil
-
-                logger = Logger.new('log/development.log')
-                logger.debug cf
-                logger.debug state
+                val = user.custom_value_for(cf).value rescue nil
 
                 if val != nil
                   rid = val.match(/#!rid\d+/)
