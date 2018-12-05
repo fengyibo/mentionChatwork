@@ -108,7 +108,14 @@ class ChatWorkListener < Redmine::Hook::Listener
 
     if header
       result +=
-          "[title]#{'['+header[:status]+']' if header[:status]} #{header[:title] if header[:title]} / #{header[:project] if header[:project]}\n#{header[:url] if header[:url]}\n#{'By: '+header[:by] if header[:by]}#{', Assignee: '+header[:assigned_to] if header[:assigned_to]}#{', Author: '+header[:author] if header[:author]}[/title]"
+          "[title]"+
+          "#{'['+header[:status]+']' if header[:status]} "+
+          "#{header[:title] if header[:title]} / #{header[:project] if header[:project]}　"+
+          "#{header[:url] if header[:url]}　"+
+          # "#{'送信者: '+header[:by] if header[:by]}"+
+          "#{'送信者: '+header[:assigned_to] if header[:assigned_to]}"+
+          # "#{', 責任者: '+header[:author] if header[:author]}"+
+          "[/title]"
     end
 
     if body
